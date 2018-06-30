@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
+    "start": "node server.js",
     "start_debug": "DEBUG=horses-ref:* npm start",
     "test_api": "mocha test/api/controllers/*.js",
     "test_auth": "mocha test/api/helpers/security/securityHandlers.js",

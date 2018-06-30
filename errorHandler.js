@@ -2,8 +2,8 @@
 
 const config = require('config');
 const statuses = require('statuses');
-const logger = require('debug');
-const error = logger(`${config.get('name')}:errorHandle`);
+const logger = require('./common/helpers/logger');
+const error = logger.error(`:errorHandle`);
 
 const htmlError = (res, message, status, expose, err) => {
   // set locals, only providing error in development

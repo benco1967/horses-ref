@@ -1,0 +1,40 @@
+{
+  "db": {
+    "user": "test",
+    "pwd": "test",
+    "dbName": "horsesRef"
+  },
+  "auth": {
+    "bearer": {
+      "secret": "secret",
+      "issuer": "test",
+      "audience": "test"
+    },
+    "basic": {
+      "users": [
+        {
+          "userId": "admin",
+          "username": "admin",
+          "password": "admin",
+          "groups": {
+            "admin": ["admin"]
+          }
+        }
+      ]
+    },
+    "adminGroupRoleMapping" : { "all": [ "adm", "mng", "ins", "usr" ] }
+  },
+  "sign": {
+    "secret": "secret",
+    "payload": {
+      "Grp" : { "admin": [ "admin" ], "test": [ "all" ] },
+      "Usr": "testuser"
+    },
+    "options": {
+      "algorithm": "HS256",
+      "expiresIn": "365d",
+      "issuer": "test",
+      "audience": "test"
+    }
+  }
+}

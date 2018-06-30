@@ -1,0 +1,81 @@
+# swagger configuration file
+
+# values in the swagger hash are system configuration for swagger-node
+swagger:
+
+  fittingsDirs: [ api/fittings ]
+  defaultPipe: null
+  swaggerControllerPipe: swagger_controllers  # defines the standard processing pipe for controllers
+
+  # values defined in the bagpipes key are the bagpipes pipes and fittings definitions
+  # (see https://github.com/apigee-127/bagpipes)
+  bagpipes:
+
+    _router:
+      name: swagger_router
+      mockMode: false
+      mockControllersDirs: [ api/mocks ]
+      controllersDirs: [ api/controllers ]
+
+    _swagger_validate:
+      name: swagger_validator
+      validateResponse: true
+
+    # pipe for all swagger-node controllers
+    swagger_controllers:
+      - onError: json_error_handler
+      - cors
+      - tenantLoader
+      - tenantDisabler
+      - swagger_security
+      - _swagger_validate
+      - express_compatibility
+      - _router
+
+    # pipe to serve swagger (endpoint is in swagger.yaml)
+    swagger_raw:
+      name: swagger_raw
+
+# any other values in this file are just loaded into the config for application access...
+name: horses-ref
+db:
+  host: "localhost"
+  port: 27017
+  dbName: "horsesRef"
+
+host: localhost
+port: 10010
+basePath: /
+auth:
+  bearer:
+    # the secret must be one of
+    # - secret : the shared secret string
+    # - secretPath : the path to the public key file
+    # - secretUrl : the url of the service that provide the secret (a GET is done with the url the body response is the
+    # key)
+    secret: secret
+    #secretPath: ./config/jwtSecret.pub
+    # if the issuer is specified, the iss field must be present and equal
+    issuer: null
+    # if the aud field is present it must content this audience id. audience id can be set to null, in that case no check
+    # is done
+    audience: null
+  basic:
+    # Le tableau des utilisateurs qui spécifie les utilisateur pouvant se connecter par ce protocole
+    # exemple : "users": [
+    #            {
+    #              "userId": "admin",       c'est l'identifiant qui apparaîtra dans les logs
+    #              "username": "admin",     c'est le nom fourni dans la requête
+    #              "password": "admin",     c'est le mot de passe fourni dans la requête
+    #              "groups": {              ce sont les rôles pour chaque tenant
+    #                "admin": ["admin"]
+    #              }
+    #            }
+    #          ]
+    # par défaut aucun utilisateur n'est définit, ceci sert majoritairement pour les tests et le développement, ou en
+    # production afin de définir le super administrateur permettant d'initialiser le service, mais ce dernier usage est
+    # déconseillé car fragile pour la sécurité.
+    users: []
+  adminGroupRoleMapping :
+    admin:
+      - adm

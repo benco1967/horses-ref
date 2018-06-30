@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>erreurr <%= error.status %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1>Une erreur est survenue</h1>
+    <h2><%= error.status %> <%= message %></h2>
+    <pre><%= error.stack %></pre>
+  </body>
+</html>

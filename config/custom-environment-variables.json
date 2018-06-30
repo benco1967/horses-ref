@@ -1,0 +1,15 @@
+{
+  "Customer": {
+    "mongodb": {
+      "user": "MONGODB_USERNAME",
+      "pwd": "MONGODB_PASSWORD",
+      "host": "MONGODB_HOST",
+      "port": "MONGODB_PORT",
+      "dbName": "MONGODB_DBNAME"
+    }
+  },
+  "port": "PORT",
+  "auth": {
+    "secret": "AUTH_SECRET"
+  }
+}

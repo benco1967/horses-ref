@@ -1,0 +1,135 @@
+'use strict';
+const express = require('express');
+const links = require('../helpers/linkBuilder');
+const StatusBuilder = require('../helpers/statusBuilder');
+const Version = require("../../common/models/version");
+const ROLES = require('../models/groupRoleMapping').ROLES;
+const debug = require('debug')('horses-ref:infos-router');
+
+
+const infosRouter = express.Router();
+module.exports = () => infosRouter;
+
+debug(`create infos router`);
+infosRouter.get('/', (req, res) => {
+
+  debug(`call get /`);
+  //TODO gérer l'url dans la config
+  const url = "/horsesRef";
+
+  res.header("link",
+    new links()
+      .add({
+        href: `${url}/info/status`,
+        rel: "status",
+        title: "Refers to the service's status",
+        name: "status",
+        method: "GET",
+        type: "application/json"
+      })
+      .add({
+        href: `${url}/info/license`,
+        rel: "license",
+        title: "Refers to the service's license",
+        name: "license",
+        method: "GET",
+        type: "plain/text"
+      })
+      .add({
+        href: `${url}/info/roles`,
+        rel: "roles",
+        title: "List all available roles",
+        name: "roles",
+        method: "GET",
+        type: "application/json"
+      })
+      .add({
+        href: `${url}/info/version`,
+        rel: "version",
+        title: "Refers to the service's version",
+        name: "version",
+        method: "GET",
+        type: "application/json"
+      })
+      .add({
+        href: `${url}/info/swagger.json`,
+        rel: "swagger",
+        title: "Refers to the service's swagger definition",
+        name: "swagger",
+        method: "GET",
+        type: "application/json"
+      })
+      .add({
+        href: `${url}/admin/tenants`,
+        rel: "tenants",
+        title: "List all available tenants",
+        name: "tenants",
+        method: "GET",
+        type: "application/json"
+      })
+      .build())
+  .json({
+    title: "Administration endpoint",
+    description: "Welcome to the multitenancy administration endpoint, you will find all available tenants"
+  });
+});
+
+
+/**
+ * Retourne la version de ce service
+ * @param req request
+ * @param res réponse contenant la version du service
+ */
+infosRouter.get('/version', (req, res) => {
+  debug(`call get /version`);
+  //TODO mettre la version et notamment le build_number dynamiquement
+  res.json(new Version("horsesRef", "0.1.0"));
+});
+/**
+ * Méthode pour /admin/status
+ *
+ * Retourne le status courant de ce service
+ * @param req request
+ * @param res réponse json décrivant l'état du service et de ses dépendances
+ */
+infosRouter.get('/status', (req, res) => {
+  debug(`call get /status`);
+  new StatusBuilder("Service horse-ref")
+    .addDependencie(require('../helpers/dbStatus'))
+    .getStatus()
+    .then(status => res.json(status));
+});
+/**
+ * Méthode pour /admin/license
+ *
+ * Retourne la licence de ce service
+ * @param req request
+ * @param res réponse au format au format Atom XML RFC4946
+ */
+infosRouter.get('/license', (req, res) => {
+  debug(`call get /license`);
+  const root = __dirname + '/../..';
+  const licenseFilePath = '/config/license.xml';
+  res.sendFile(
+    licenseFilePath,
+    { root },
+    err => {
+      if(err) {
+        console.error(`error to get the license: ${err}`);
+        res.status(500).json({message: err});
+      }
+    });
+});
+
+/**
+ * Méthode pour /admin/roles
+ *
+ * Retourne la liste des roles disponibles pour ce service
+ * @param req request
+ * @param res réponse JSON décrivant les rôles du services
+ */
+infosRouter.get('/roles', (req, res) => {
+  debug(`call get /roles`);
+  res.json(ROLES);
+});
+

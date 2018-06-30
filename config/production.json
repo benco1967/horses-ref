@@ -1,0 +1,9 @@
+{
+  "db": {
+    "user": "myusernamexxx",
+    "pwd": "mypasswordxxx",
+    "host": "hostxxx",
+    "port": "27017",
+    "dbName": "horsesRef"
+  }
+}

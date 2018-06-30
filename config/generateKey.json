@@ -1,0 +1,14 @@
+{
+  "sign": {
+    "secret": "secret",
+    "payload": {
+      "iss": "account-manager",
+      "Grp": {"test":["marketing", "utilisateur"], "toto":["chef"], "admin": ["admin"] },
+      "Usr": "testuser"
+    },
+    "options": {
+      "algorithm": "HS256",
+      "expiresIn": "365d"
+    }
+  }
+}

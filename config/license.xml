@@ -1,0 +1,22 @@
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>http://www.example.com/myfeed</id>
+  <title>My Example Feed</title>
+  <updated>2018-01-01T12:00:00Z</updated>
+  <link href="http://www.example.com/myfeed" />
+  <link rel="license" type="application/rdf+xml"
+        href="http://creativecommons.org/licenses/by-nc/2.5/rdf" />
+  <rights>
+    Copyright (c) 2018.  Some rights reserved.
+  </rights>
+  <author><name>Benoît Chanclou</name></author>
+  <entry>
+    <id>tag:entries.org,2018:1</id>
+    <title>Atom Powered Robots Run Amok</title>
+    <updated>2018-01-01T12:00:00Z</updated>
+    <link href="http://www.example.org/entries/1" />
+    <summary>Atom Powered Robots Run Amok</summary>
+    <author><name>Benoît Chanclou</name></author>
+    <link rel="license" type="text/html"
+          href="http://creativecommons.org/licenses/by/2.5/" />
+  </entry>
+</feed>

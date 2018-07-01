@@ -3,14 +3,14 @@
 const express = require('express');
 const logger = require('../../common/helpers/logger');
 const tenantLoader = require('loader-mw');
-const NotFound = require('http-errors').NotFound;
+
+const debugLog = logger.debug(`router`);
+debugLog(`API is initializing`);
+
 /*
 const horsesRouter = require('./routes/horses');
 const adminRouter = require('./routes/admin');
 */
-const infosRouter = require('./infos');
-const info = logger.info(`router`);
-info(`API is initializing`);
 
 const router = express.Router();
 
@@ -30,6 +30,9 @@ router.use(`:tenant/`, tenantSettingsRouter);
 router.use(`admin`, adminRouter);
 */
 // Info
-router.use('/infos/', infosRouter);
+router.use('/infos/', require('./infos'));
+
+
+debugLog(`API initialized`);
 
 module.exports = router;

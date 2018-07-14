@@ -2,22 +2,18 @@
 
 const express = require('express');
 const logger = require('../../common/helpers/logger');
-const tenantLoader = require('loader-mw');
+//const tenantLoader = require('loader-mw');
 
 const debugLog = logger.debug(`router`);
 debugLog(`API is initializing`);
 
 /*
 const horsesRouter = require('./routes/horses');
-const adminRouter = require('./routes/admin');
 */
+
 
 const router = express.Router();
 
-router.use((req, res, next) => {
-  console.log('router');
-  next();
-});
 /*// Horses
 router.param('tenant', tenantLoader({
   accessorFn : id => tenantService.getTenant(id)
@@ -26,9 +22,11 @@ router.param('tenant', tenantLoader({
 router.use(`:tenant/horses`, horsesRouter);
 // Setting
 router.use(`:tenant/`, tenantSettingsRouter);
-// Admin
-router.use(`admin`, adminRouter);
 */
+
+// Admin
+router.use(`/admin/`, require('./admin'));
+
 // Info
 router.use('/infos/', require('./infos'));
 

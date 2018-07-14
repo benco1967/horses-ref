@@ -1,15 +1,14 @@
 'use strict';
 
-const debug = require('debug')("horsesRef:tenant");
-const error = require('debug')("horsesRef:error:tenant");
+const createError = require('http-errors');
 const mongoose = require('mongoose');
 const groupRoleMapping = require('./groupRoleMapping').schema(false);
 const checkDB = require('./dbConnection').checkDB;
 const Tenant = require('../../common/models/tenant');
 
-const ALREADY_EXISTS = require('../helpers/errorCodes').ALREADY_EXISTS;
-const NOT_FOUND = require('../helpers/errorCodes').NOT_FOUND;
-const FORBIDDEN_ID = require('../helpers/errorCodes').FORBIDDEN_ID;
+const logger = require('../../common/helpers/logger');
+const debug = logger.debug("tenant");
+const error = logger.error("tenant");
 
 // Definitions du modele
 const tenantSchema = new mongoose.Schema({
@@ -79,7 +78,7 @@ const get = (idTenant, proj) =>
       return TenantModel.findOne({id: idTenant}, projection);
     })
     .then(tenant => {
-      if (tenant === null) throw { name: "DBConnectionError", code: NOT_FOUND, message: "No such tenant" };
+      if (tenant === null) throw new createError.NotFound("No such tenant");
 
       return tenant;
     });
@@ -92,7 +91,7 @@ const update = (idTenant, proj, value) =>
       return TenantModel.findOneAndUpdate({id: idTenant}, update, { new: true });
     })
     .then(tenant => {
-      if (tenant === null) throw { name: "DBConnectionError", code: NOT_FOUND, message: "No such tenant" };
+      if (tenant === null) throw new createError.NotFound("No such tenant");
 
       return tenant[proj];
     });
@@ -111,11 +110,11 @@ const create = (tenantId, description, contacts) =>
     .then(tenant => {
       if (tenant !== null) {
         error(`try to create the tenant "${tenantId}" that already exists`);
-        throw { name: "DBConnectionError", code: ALREADY_EXISTS, message: "Already defined" };
+        throw new createError.Conflict("Already defined");
       }
       if (tenantId === 'admin') {
         error(`try to create the tenant "${tenantId}" but this id is reserved`);
-        throw { name: "DBConnectionError", code: FORBIDDEN_ID, message: "Forbidden id" };
+        throw new createError.Conflict("Forbidden id");
       }
       debug(`create the tenant "${tenantId}"`);
       return TenantModel.create(new Tenant(tenantId, description, contacts));

@@ -46,7 +46,8 @@ db:
 host: localhost
 port: 10010
 basePath: /
-auth:
+
+security:
   bearer:
     # the secret must be one of
     # - secret : the shared secret string

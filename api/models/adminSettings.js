@@ -1,11 +1,10 @@
 'use strict';
 
-const debug = require('debug')("horsesRef:admin");
+const infoLog = require('../../common/helpers/logger').info("admin-settings");
 const mongoose = require('mongoose');
 const groupRoleMapping = require('./groupRoleMapping').schema(true);
 const checkDB = require('./dbConnection').checkDB;
-
-const NOT_FOUND = require('../helpers/errorCodes').NOT_FOUND;
+const createError = require('http-errors');
 
 // Definitions du modele
 const settings = new mongoose.Schema({
@@ -48,18 +47,18 @@ const _newSettings = () =>
 const _create = () =>
   checkDB()
     .then(() => {
-      debug(`created the admin settings`);
+      infoLog(`created the admin settings`);
       return adminSettingsModel.create(_newSettings());
     });
 
 /**
  *
- * @returns {Promise.<TResult>}
+ * @returns {Promise}
  */
 const get = () => checkDB()
-    // inutile d'avoir l'id du document car c'est le seul de la collection
-    .then(() => adminSettingsModel.findOne({}))
-    .then(settings => settings === null ? _create() : settings);
+// inutile d'avoir l'id du document car c'est le seul de la collection
+  .then(() => adminSettingsModel.findOne({}))
+  .then(settings => settings === null ? _create() : settings);
 
 
 const update = value =>
@@ -74,7 +73,7 @@ const update = value =>
     }))
     .then(settings => settings.save())
     .then(settings => {
-      if (settings === null) throw { name: "DBConnectionError", code: NOT_FOUND, message: "Unable to update the settings" };
+      if (settings === null) throw new createError.NotFound("Unable to update the settings");
       return settings;
     });
 

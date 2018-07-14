@@ -3,10 +3,11 @@ const links = require('../helpers/linkBuilder');
 const StatusBuilder = require('../helpers/statusBuilder');
 const Version = require("../../common/models/version");
 const ROLES = require('../models/groupRoleMapping').ROLES;
-const logger = require('debug');
 const config = require('config');
 
-const debug = logger(config.get('name') + ':infos-controller');
+const logger = require('../../common/helpers/logger');
+const debugLog = logger.debug(`infos-controller`);
+const errorLog = logger.error(':infos-controller');
 
 module.exports = {
   root: (req, res) => {
@@ -74,7 +75,7 @@ module.exports = {
    * @param res réponse contenant la version du service
    */
   version: (req, res) => {
-    debug(`call get /version`);
+    debugLog(`call get /version`);
     //TODO mettre la version et notamment le build_number dynamiquement
     res.json(new Version("horsesRef", "0.1.0"));
   },
@@ -86,7 +87,7 @@ module.exports = {
    * @param res réponse json décrivant l'état du service et de ses dépendances
    */
   status: (req, res) => {
-    debug(`call get /status`);
+    debugLog(`call get /status`);
     new StatusBuilder("Service horse-ref")
       .addDependencie(require('../helpers/dbStatus'))
       .getStatus()
@@ -100,7 +101,7 @@ module.exports = {
    * @param res réponse au format au format Atom XML RFC4946
    */
   license: (req, res) => {
-    debug(`call get /license`);
+    debugLog(`call get /license`);
     const root = __dirname + '/../..';
     const licenseFilePath = '/config/license.xml';
     res.sendFile(
@@ -108,7 +109,7 @@ module.exports = {
       {root},
       err => {
         if (err) {
-          console.error(`error to get the license: ${err}`);
+          errorLog(`error to get the license: ${err}`);
           res.status(500).json({message: err});
         }
       });
@@ -121,7 +122,7 @@ module.exports = {
    * @param res réponse JSON décrivant les rôles du services
    */
   roles: (req, res) => {
-    debug(`call get /roles`);
+    debugLog(`call get /roles`);
     res.json(ROLES);
   },
 };

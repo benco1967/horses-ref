@@ -4,7 +4,7 @@
     "pwd": "test",
     "dbName": "horsesRef"
   },
-  "auth": {
+  "security": {
     "bearer": {
       "secret": "secret",
       "issuer": "test",
@@ -17,17 +17,33 @@
           "username": "admin",
           "password": "admin",
           "groups": {
-            "admin": ["admin"]
+            "admin": [
+              "admin"
+            ]
           }
         }
       ]
     },
-    "adminGroupRoleMapping" : { "all": [ "adm", "mng", "ins", "usr" ] }
+    "adminGroupRoleMapping": {
+      "all": [
+        "adm",
+        "mng",
+        "ins",
+        "usr"
+      ]
+    }
   },
   "sign": {
     "secret": "secret",
     "payload": {
-      "Grp" : { "admin": [ "admin" ], "test": [ "all" ] },
+      "Grp": {
+        "admin": [
+          "admin"
+        ],
+        "test": [
+          "all"
+        ]
+      },
       "Usr": "testuser"
     },
     "options": {

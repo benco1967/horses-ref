@@ -1,8 +1,7 @@
 'use strict';
 
-const error = require('../helpers/errorCodes').error;
-const BAD_REQUEST = require('../helpers/errorCodes').BAD_REQUEST;
-const NOT_FOUND = require('../helpers/errorCodes').NOT_FOUND;
+
+const createError = require('http-errors');
 const checkDB = require('./dbConnection').checkDB;
 const jsonpatch = require('fast-json-patch');
 const uuid = require('uuid/v4');
@@ -47,7 +46,7 @@ const get = (tenantId, id) => checkDB()
       return null;
     }
     if(result.length !== 1) {
-      throw error(BAD_REQUEST, `Horses db integrity error ${id} (${result.length})`);
+      throw new createError.BadRequest(`Horses db integrity error ${id} (${result.length})`);
     }
     //reconstruction du cheval
     return jsonpatch.applyPatch({ tenantId, id }, result[0].patch).newDocument;
@@ -80,14 +79,14 @@ const update = (horseId, userId, tenantId, newHorse) => get(tenantId, horseId ||
         defaultHorse.tenantId = tenantId;
       }
       else {
-        throw error(BAD_REQUEST, `Horses db integrity error can't create ${newHorse.id} that already exits`);
+        throw new createError.BadRequest(`Horses db integrity error can't create ${newHorse.id} that already exits`);
       }
     }
     else if (prevHorse === null) {
-      throw error(NOT_FOUND, `unknow horse`);
+      throw new createError.NotFound(`unknow horse`);
     }
     else if (horseId !== newHorse.id) {
-      throw error(BAD_REQUEST, `Horses db integrity error ${newHorse.id} (should be ${horseId})`)
+      throw new createError.BadRequest(`Horses db integrity error ${newHorse.id} (should be ${horseId})`)
     }
     newHorse = Object.assign(defaultHorse, newHorse, { updatedAt: new Date() });
 
@@ -97,10 +96,10 @@ const update = (horseId, userId, tenantId, newHorse) => get(tenantId, horseId ||
 const patch = (horseId, userId, tenantId, patch) => get(tenantId, horseId || "")
   .then(prevHorse => {
     if (prevHorse === null) {
-      throw error(NOT_FOUND, `unknow horse`);
+      throw new createError.NotFound(`unknow horse`);
     }
     if (!validateJsonPatch(patch)) {
-      throw error(BAD_REQUEST, 'bad patch format');
+      throw new createError.BadRequest('bad patch format');
     }
     const newHorse = jsonpatch.applyPatch(Object.assign({}, prevHorse, { updatedAt: new Date() }), patch).newDocument;
     //TODO check horse schema

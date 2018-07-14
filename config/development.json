@@ -4,7 +4,7 @@
     "pwd": "mypassword",
     "dbName": "horsesRef"
   },
-  "auth": {
+  "security-mw": {
     "basic": {
       "users": [
         {

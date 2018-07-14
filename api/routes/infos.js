@@ -1,14 +1,14 @@
 'use strict';
 
 const express = require('express');
-const infoController = require('../controllers/infos');
 
 const logger = require('../../common/helpers/logger');
 const debugLog = logger.debug(`infos-routes`);
 
-const infosRouter = express.Router();
-
 debugLog(`Creating infos router`);
+
+const infoController = require('../controllers/infos');
+const infosRouter = express.Router();
 
 // API de'entrée
 infosRouter.get('/', infoController.root);

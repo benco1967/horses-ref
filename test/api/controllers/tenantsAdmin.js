@@ -4,8 +4,6 @@ const request = require('supertest');
 const propertyCI = require('../helpers/shouldPropertyCI');
 const utilsAndConst = require('../helpers/utilsAndConst');
 const REGEX_LINK = utilsAndConst.LINK;
-const codeToResponse = require('../../../api/helpers/errorCodes').codeToResponse;
-;
 
 const createTestTenant = require('../helpers/dbTest').createTestTenant;
 const createDisabledTestTenant = require('../helpers/dbTest').createDisbaledTestTenant;
@@ -129,9 +127,6 @@ require('../helpers/security/generateAuthorization')().then(authorization => {
                   });
                   done();
                 });
-            })
-            .catch((err) => {
-              codeToResponse(res, err);
             });
         });
 
@@ -166,7 +161,7 @@ require('../helpers/security/generateAuthorization')().then(authorization => {
 
       describe('GET /admin/tenants/test/settings', () => {
 
-        it('should return settings of the new tenant', done => {
+        it('should return settings of the tenant', done => {
           createTestTenant()
             .then(() => {
               request(server)

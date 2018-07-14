@@ -3,7 +3,7 @@
  * atteinte.
  * voir READ.md
  */
-const errorCodes = require('../helpers/errorCodes');
+const createError = require('http-errors');
 
 module.exports = (shouldDisable) => (req, res, next) => {
   const tenant = req.getCustomParam("tenant", "value");
@@ -26,7 +26,7 @@ module.exports = (shouldDisable) => (req, res, next) => {
   // si le tenant est désactivé
   if (shouldDisable && tenant.enable === false) {
     req.deleteCustomParam("tenant");
-    errorCodes.codeToResponse(res, errorCodes.GONE);
+    throw new createError.Gone();
   }
   else {
     next();

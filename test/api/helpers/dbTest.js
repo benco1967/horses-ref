@@ -4,7 +4,7 @@
 // this is helpful when you would like to change behavior when testing
 process.env.NODE_ENV = 'test';
 process.env.ALLOW_CONFIG_MUTATIONS = true;
-const debug = require('debug')('horses-ref:test-db');
+const debug = require('../../../common/helpers/logger').debug('test-db');
 const mongoose = require('mongoose');
 const dbConnection = require('../../../api/models/dbConnection');
 const tenant = require('../../../api/models/tenant');

@@ -1,9 +1,10 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const debug = require('debug')("horsesRef:db");
-const error = require('debug')("horsesRef:error:db");
-const UNABLE_TO_CONNECT = require('../helpers/errorCodes').UNABLE_TO_CONNECT;
+const logger = require('../../common/helpers/logger');
+const debugLog = logger.debug(`db-connexion`);
+const errorLog = logger.error(`db-connexion`);
+const createError = require('http-errors');
 
 
 // Use native promises fo mongoose
@@ -24,21 +25,21 @@ const options = {
 // Build the connection string
 const uri = `mongodb://${dbConfig.user}:${dbConfig.pwd}@${dbConfig.host}:${dbConfig.port}/${dbConfig.dbName}`;
 
-debug(`db uri ${uri}`);
+debugLog(`db uri ${uri}`);
 
 const errorHandler = err => {
-  error(`Mongoose default connection error: ${err && err.message && JSON.stringify(err) || err}`);
+  errorLog(`Mongoose default connection error: ${err && err.message && JSON.stringify(err) || err}`);
 };
 const disconnectHandler = () => {
-  debug('Mongoose default connection disconnected');
+  debugLog('Mongoose default connection disconnected');
 };
 
 const openDB = () => {
-  debug(`connecting to db ${uri}`);
+  debugLog(`connecting to db ${uri}`);
   // Connect then store the promise as result
   return mongoose.connect(uri, options)
     .then(() => {
-      debug("connected to the db with the default connection");
+      debugLog("connected to the db with the default connection");
 
       mongoose.connection
         .removeListener('error', errorHandler)
@@ -54,8 +55,8 @@ const checkDB = () =>
   openDB()
     .then(() => {})
     .catch(err => {
-      error(`Mongo error: ${err && err.message && JSON.stringify(err) || err}`);
-      throw { name: "DBConnectionError", code: UNABLE_TO_CONNECT, message: "failed to connect to the db server" }
+      errorLog(`Mongo error: ${err && err.message && JSON.stringify(err) || err}`);
+      throw new createError.ServiceUnavailable("failed to connect to the db server");
     });
 
 

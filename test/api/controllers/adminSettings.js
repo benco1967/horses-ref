@@ -1,6 +1,6 @@
 const should = require('should');
 const request = require('supertest');
-const debug = require('debug')('horses-ref:test-admin');
+const debug = require('../../../common/helpers/logger').debug('test-admin');
 
 const createTestTenant = require('../helpers/dbTest').createTestTenant;
 
@@ -18,7 +18,7 @@ let authorization = null;
 
     describe('admin/settings', () => {
 
-      beforeEach(done => createTestTenant().then(() => { done(); }));
+      beforeEach(done => { createTestTenant().then(() => done()) } );
       describe('GET /admin/settings', () => {
         const settings = {
           texts: {

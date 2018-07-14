@@ -18,7 +18,7 @@ require('../helpers/security/generateAuthorization')().then(authorization => {
 
       describe('GET /test/settings', () => {
 
-        it('should return settings of the new tenant', done => {
+        it('should return settings of the tenant', done => {
           createTestTenant().then(() => {
             request(server)
               .get('/test/settings')
@@ -65,7 +65,7 @@ require('../helpers/security/generateAuthorization')().then(authorization => {
 
       describe('PUT /test/settings', () => {
 
-        it('should return settings of the new tenant', done => {
+        it('should return settings of the tenant', done => {
 
           createTestTenant().then(() => {
             request(server)

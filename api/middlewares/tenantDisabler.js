@@ -6,7 +6,7 @@
 const createError = require('http-errors');
 
 module.exports = (shouldDisable) => (req, res, next) => {
-  const tenant = req.getCustomParam("tenant", "value");
+  const tenant = req.getPrm('tenant', 'value');
   if (tenant === null) {
     // Pas de tenant on passe à la suite
     return next();
@@ -25,7 +25,7 @@ module.exports = (shouldDisable) => (req, res, next) => {
 
   // si le tenant est désactivé
   if (shouldDisable && tenant.enable === false) {
-    req.deleteCustomParam("tenant");
+    req.deletePrm('tenant');
     throw new createError.Gone();
   }
   else {

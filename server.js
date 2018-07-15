@@ -4,10 +4,10 @@ const path = require('path');
 const http = require('http');
 const config = require('config');
 const logger = require('./common/helpers/logger');
-const debugLog = logger.debug('server');
 const infoLog = logger.info('server');
 const errorLog = logger.error('server');
 
+console.log(`Starting service ${config.get('name')} in "${process.env.NODE_ENV}" mode`);
 infoLog(`Starting service ${config.get('name')} in "${process.env.NODE_ENV}" mode`);
 
 const app = require('./app');
@@ -61,11 +61,13 @@ const onListening = () => {
   const host = app.get('host');
   const addr = server.address();
   if (typeof addr === 'string') {
+    console.log(`Server is listening ${host} on pipe ${addr}`);
     infoLog(`Server is listening ${host} on pipe ${addr}`);
   }
   else {
+    console.log(`Server is listening ${host} on port ${addr.port}`);
+    console.log(`curl ${addr.address}:${addr.port}${infoPath}`);
     infoLog(`Server is listening ${host} on port ${addr.port}`);
-    infoLog(`curl ${addr.address}:${addr.port}${infoPath}`);
   }
 };
 

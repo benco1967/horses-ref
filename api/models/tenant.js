@@ -70,6 +70,7 @@ const getAll = () =>
 const get = (idTenant, proj) =>
   checkDB()
     .then(() => {
+      console.log(`tenant get(${idTenant})`);
       let projection = undefined;
       if(proj !== undefined) {
         projection = {};

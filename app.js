@@ -42,7 +42,8 @@ const normalizePort = value => {
 
 
 const init = () => {
-
+  // set the view engine to ejs
+  server.set('view engine', 'ejs');
 
   server.set('host', config.get('host'));
   server.set('port', normalizePort(config.get('port')));

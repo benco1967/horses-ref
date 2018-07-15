@@ -1,4 +1,5 @@
 'use strict';
+const createError = require('http-errors');
 const links = require('../helpers/linkBuilder');
 const StatusBuilder = require('../helpers/statusBuilder');
 const Version = require("../../common/models/version");
@@ -6,7 +7,6 @@ const ROLES = require('../models/groupRoleMapping').ROLES;
 const config = require('config');
 
 const logger = require('../../common/helpers/logger');
-const debugLog = logger.debug(`infos-controller`);
 const errorLog = logger.error(':infos-controller');
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
     res.header("link",
       new links()
         .add({
-          href: `${url}/info/status`,
+          href: `${url}/status`,
           rel: "status",
           title: "Refers to the service's status",
           name: "status",
@@ -24,7 +24,7 @@ module.exports = {
           type: "application/json"
         })
         .add({
-          href: `${url}/info/license`,
+          href: `${url}/license`,
           rel: "license",
           title: "Refers to the service's license",
           name: "license",
@@ -32,7 +32,7 @@ module.exports = {
           type: "plain/text"
         })
         .add({
-          href: `${url}/info/roles`,
+          href: `${url}/roles`,
           rel: "roles",
           title: "List all available roles",
           name: "roles",
@@ -40,7 +40,7 @@ module.exports = {
           type: "application/json"
         })
         .add({
-          href: `${url}/info/version`,
+          href: `${url}/version`,
           rel: "version",
           title: "Refers to the service's version",
           name: "version",
@@ -48,7 +48,7 @@ module.exports = {
           type: "application/json"
         })
         .add({
-          href: `${url}/info/swagger.json`,
+          href: `${url}/swagger.json`,
           rel: "swagger",
           title: "Refers to the service's swagger definition",
           name: "swagger",
@@ -75,7 +75,6 @@ module.exports = {
    * @param res réponse contenant la version du service
    */
   version: (req, res) => {
-    debugLog(`call get /version`);
     //TODO mettre la version et notamment le build_number dynamiquement
     res.json(new Version("horsesRef", "0.1.0"));
   },
@@ -87,7 +86,6 @@ module.exports = {
    * @param res réponse json décrivant l'état du service et de ses dépendances
    */
   status: (req, res) => {
-    debugLog(`call get /status`);
     new StatusBuilder("Service horse-ref")
       .addDependencie(require('../helpers/dbStatus'))
       .getStatus()
@@ -99,9 +97,9 @@ module.exports = {
    * Retourne la licence de ce service
    * @param req request
    * @param res réponse au format au format Atom XML RFC4946
+   * @param next
    */
-  license: (req, res) => {
-    debugLog(`call get /license`);
+  license: (req, res, next) => {
     const root = __dirname + '/../..';
     const licenseFilePath = '/config/license.xml';
     res.sendFile(
@@ -110,7 +108,7 @@ module.exports = {
       err => {
         if (err) {
           errorLog(`error to get the license: ${err}`);
-          res.status(500).json({message: err});
+          next(new createError.ServiceUnavailable(err));
         }
       });
   },
@@ -122,7 +120,6 @@ module.exports = {
    * @param res réponse JSON décrivant les rôles du services
    */
   roles: (req, res) => {
-    debugLog(`call get /roles`);
     res.json(ROLES);
   },
 };

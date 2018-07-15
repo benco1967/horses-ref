@@ -15,12 +15,12 @@ describe('controllers admin general', () => {
 
   describe('admin', () => {
 
-    describe('GET /infos', () => {
+    describe('GET /admin', () => {
 
       it('should return general information', done => {
 
         request(server)
-          .get('/infos')
+          .get('/admin')
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
@@ -34,12 +34,12 @@ describe('controllers admin general', () => {
 
     });
 
-    describe('GET /infos/version', () => {
+    describe('GET /admin/version', () => {
 
       it('should return a version', done => {
 
         request(server)
-          .get('/infos/version')
+          .get('/admin/version')
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
@@ -59,12 +59,12 @@ describe('controllers admin general', () => {
 
     });
 
-    describe('GET /infos/status', () => {
+    describe('GET /admin/status', () => {
 
       it('should return a status', done => {
 
         request(server)
-          .get('/infos/status')
+          .get('/admin/status')
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
@@ -87,12 +87,12 @@ describe('controllers admin general', () => {
 
     });
 
-    describe('GET /infos/roles', () => {
+    describe('GET /admin/roles', () => {
 
       it('should return a roles list', done => {
 
         request(server)
-          .get('/infos/roles')
+          .get('/admin/roles')
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
@@ -113,12 +113,12 @@ describe('controllers admin general', () => {
     });
 
 
-    describe('GET /infos/license', () => {
+    describe('GET /admin/license', () => {
 
       it('should return a license description', done => {
 
         request(server)
-          .get('/infos/license')
+          .get('/admin/license')
           .set('Accept', 'text/xml')
           .expect('Content-Type', /xml/)
           .expect(200)

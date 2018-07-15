@@ -24,11 +24,14 @@ router.use(`:tenant/horses`, horsesRouter);
 router.use(`:tenant/`, tenantSettingsRouter);
 */
 
-// Admin
-router.use(`/admin/`, require('./admin'));
+// Admin tenants
+router.use(`/admin/tenants/`, require('./adminTenants'));
 
-// Info
-router.use('/infos/', require('./infos'));
+// Admin settings
+router.use(`/admin/settings`, require('./adminSettings'));
+
+// Admin infos
+router.use('/admin/', require('./adminInfos'));
 
 
 debugLog(`API initialized`);

@@ -20,16 +20,15 @@ const createTestTenant = name => {
       {description: [{locale: 'fr', text: 'tenant de test'}]},
       ["test@example.com"]
     )
-    .then(tenant => {
-      TenantModel.findOneAndUpdate({id: tenant.id}, {$set: {groupRoleMapping: {"all": ["mng", "snd", "usr"]}}}, {new: true});
-      debug('Tenant created');
-    });
+    .then(tenant =>
+      TenantModel.findOneAndUpdate({id: tenant.id}, {$set: {groupRoleMapping: {"all": ["mng", "snd", "usr"]}}}, {new: true})
+    );
 };
 
 
 module.exports = {
   createTestTenant,
-  createDisbaledTestTenant: () => createTestTenant().then(tenant => tenant.update({ $set: { enable: false } }))
+  createDisabledTestTenant: () => createTestTenant().then(tenant => tenant.update({ $set: { enable: false } }))
 };
 
 beforeEach(done => {

@@ -7,7 +7,7 @@ const debugLog = logger.debug(`admin-routes`);
 
 debugLog(`Creating admin router`);
 
-const adminController = require('../controllers/admin');
+const adminController = require('../controllers/adminSettings');
 const router = express.Router();
 
 // Access control
@@ -19,22 +19,10 @@ const securityHandler = security.security(basic, bearer);
 router.use('/', securityHandler);
 
 // API retournant les settings
-router.get('/settings', adminController.getSettings);
+router.get('/', adminController.getSettings);
 
 // API mettant à jour les settings
-router.put('/settings', adminController.updateSettings);
-
-// API retournant les tenants
-router.get('/tenants', adminController.getTenants);
-
-// API creant un tenant
-router.post('/tenants', adminController.createTenant);
-
-// API retournant les settings d'un tenant
-router.get('/tenants/:tenant/settings', adminController.getTenantSettings);
-
-// API mettant à jour les settings d'un tenant
-router.put('/tenants/:tenant/settings', adminController.updateTenantSettings);
+router.put('/', adminController.updateSettings);
 
 debugLog(`Admin router created`);
 

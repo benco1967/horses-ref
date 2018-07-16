@@ -7,23 +7,23 @@ const debugLog = logger.debug(`infos-routes`);
 
 debugLog(`Creating infos router`);
 
-const infosController = require('../controllers/adminInfos');
+const controller = require('../controllers/adminInfos');
 const infosRouter = express.Router();
 
 // API de'entrée
-infosRouter.get('/', infosController.root);
+infosRouter.get('/', controller.root);
 
 // API retournant la version de ce service
-infosRouter.get('/version', infosController.version);
+infosRouter.get('/version', controller.version);
 
 // API retournant le status
-infosRouter.get('/status', infosController.status);
+infosRouter.get('/status', controller.status);
 
 // API retournant la license
-infosRouter.get('/license', infosController.license);
+infosRouter.get('/license', controller.license);
 
 // API retournant les roles
-infosRouter.get('/roles', infosController.roles);
+infosRouter.get('/roles', controller.roles);
 
 debugLog(`Infos router created`);
 

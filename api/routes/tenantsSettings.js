@@ -7,22 +7,28 @@ const debugLog = logger.debug(`admin-routes`);
 
 debugLog(`Creating admin router`);
 
-const controller = require('../controllers/adminSettings');
+const controller = require('../controllers/tenantsSettings');
 const router = express.Router();
 
 // Access control
 const security  = require('security-mw');
-const basic  = security.Basic(['adm'], config.get('security'));
-const bearer  = security.Bearer(['adm'], config.get('security'));
+const basic  = security.Basic(['adm', 'mng'], config.get('security'));
+const bearer  = security.Bearer(['adm', 'mng'], config.get('security'));
 const securityHandler = security.security(basic, bearer);
 
 router.use('/', securityHandler);
 
 // API retournant les settings
-router.get('/', controller.getSettings);
+router.get('/settings', controller.getTenantSettings);
 
 // API mettant à jour les settings
-router.put('/', controller.updateSettings);
+router.put('/settings', controller.updateTenantSettings);
+
+// API retournant le mapping des roles
+router.get('/rolemapping', controller.getTenantGroupRoleMapping);
+
+// API mettant à jour le mapping des roles
+router.put('/rolemapping', controller.updateTenantGroupRoleMapping);
 
 debugLog(`Admin router created`);
 

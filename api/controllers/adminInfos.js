@@ -3,7 +3,7 @@ const createError = require('http-errors');
 const links = require('../helpers/linkBuilder');
 const StatusBuilder = require('../helpers/statusBuilder');
 const Version = require("../../common/models/version");
-const ROLES = require('../models/groupRoleMapping').ROLES;
+const ROLES = require('../../common/models/groupRoleMapping').ROLES;
 const config = require('config');
 
 const logger = require('../../common/helpers/logger');

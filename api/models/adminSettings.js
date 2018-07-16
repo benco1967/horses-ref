@@ -2,7 +2,7 @@
 
 const infoLog = require('../../common/helpers/logger').info("admin-settings");
 const mongoose = require('mongoose');
-const groupRoleMapping = require('./groupRoleMapping').schema(true);
+const groupRoleMapping = require('../../common/models/groupRoleMapping').schema(true);
 const checkDB = require('./dbConnection').checkDB;
 const createError = require('http-errors');
 

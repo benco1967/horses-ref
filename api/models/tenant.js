@@ -2,7 +2,7 @@
 
 const createError = require('http-errors');
 const mongoose = require('mongoose');
-const groupRoleMapping = require('./groupRoleMapping').schema(false);
+const groupRoleMapping = require('../../common/models/groupRoleMapping').schema(false);
 const checkDB = require('./dbConnection').checkDB;
 const Tenant = require('../../common/models/tenant');
 

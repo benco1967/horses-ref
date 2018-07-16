@@ -12,7 +12,7 @@ const DUMMY_SETTINGS = {
 };
 
 let authorization = null;
-describe.skip('controllers manager tenants', () => {
+describe('controllers manager tenants', () => {
   before(() => require('../helpers/security/generateAuthorization')().then(auth => authorization = auth));
 
   describe('{tenant}/settings', () => {

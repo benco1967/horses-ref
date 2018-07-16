@@ -1,16 +1,15 @@
 'use strict';
 const express = require('express');
 
-const tenants = require('../models/tenant');
-const tenantLoader = require('loader-mw');
-
 const logger = require('../../common/helpers/logger');
 const config = require('config');
 const debugLog = logger.debug(`admin-routes`);
 
 debugLog(`Creating admin router`);
 
-const adminController = require('../controllers/adminTenants');
+const controller = require('../controllers/adminTenants');
+const tenants = require('../models/tenant');
+const tenantLoader = require('loader-mw');
 const router = express.Router();
 
 // Access control
@@ -21,33 +20,23 @@ const securityHandler = security.security(basic, bearer);
 
 router.use('/', securityHandler);
 
-router.use('/', (req, res, next) => {
-  console.log(`>>>>>>>>>>>>>>>>>>>>>`);
-  next();
-});
-
 // API retournant les tenants
-router.get('/', adminController.getAllTenants);
+router.get('/', controller.getAllTenants);
 
 // API creant un tenant
-router.post('/', adminController.createTenant);
+router.post('/', controller.createTenant);
 
-router.param('tenant', tenantLoader(id => {
-  console.log(`tenant loader ${id}`);
-  return tenants.get(id);
-}));
+
+
+router.param('tenant', tenantLoader(id => tenants.get(id)));
+
 router.use('/:tenant/settings', require('../middlewares/tenantDisabler')(false));
 // API retournant les settings d'un tenant
-router.get('/:tenant/settings', adminController.getAdminTenantSettings);
+router.get('/:tenant/settings', controller.getAdminTenantSettings);
 
 // API mettant à jour les settings d'un tenant
-router.put('/:tenant/settings', adminController.updateAdminTenantSettings);
+router.put('/:tenant/settings', controller.updateAdminTenantSettings);
 
-router.use('/', (err, req, res, next) => {
-  console.log(`>>>>>>>>>>>>>>>>>>>>> ${JSON.stringify(err)}`);
-  console.error(err);
-  next(err);
-});
 
 debugLog(`Admin router created`);
 

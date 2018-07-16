@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const Role = require('../../common/models/role');
+const Role = require('./role');
 /**
  * Retourne un validateur asynchrone (qui retourne une promesse).
  * Le type de rôle est testé en fonction du paramètre.

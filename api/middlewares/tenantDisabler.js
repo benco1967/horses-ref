@@ -5,11 +5,13 @@
  */
 const createError = require('http-errors');
 
-module.exports = (shouldDisable) => (req, res, next) => {
+module.exports = (shouldDisable, unauthorized) => (req, res, next) => {
   const tenant = req.getPrm('tenant', 'value');
   if (tenant === null) {
-    // Pas de tenant on passe à la suite
-    return next();
+    // Pas de tenant on lève l'erreur
+    const err = req.getPrm('tenant', 'err');
+    next(new createError[unauthorized ? 'Unauthorized' : 'NotFound'](err));
+    return;
   }
 
   // Test de la date d'expiration et désactivation si nécessaire
@@ -26,7 +28,7 @@ module.exports = (shouldDisable) => (req, res, next) => {
   // si le tenant est désactivé
   if (shouldDisable && tenant.enable === false) {
     req.deletePrm('tenant');
-    throw new createError.Gone();
+    next(new createError.Gone());
   }
   else {
     next();

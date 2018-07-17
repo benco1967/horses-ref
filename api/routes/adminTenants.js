@@ -38,6 +38,6 @@ router.get('/:tenant/settings', controller.getAdminTenantSettings);
 router.put('/:tenant/settings', controller.updateAdminTenantSettings);
 
 
-debugLog(`Admin router created`);
+debugLog(`Admin tetant router created`);
 
 module.exports = router;

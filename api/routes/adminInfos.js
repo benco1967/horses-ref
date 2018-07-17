@@ -25,6 +25,6 @@ infosRouter.get('/license', controller.license);
 // API retournant les roles
 infosRouter.get('/roles', controller.roles);
 
-debugLog(`Infos router created`);
+debugLog(`Admin infos router created`);
 
 module.exports = infosRouter;

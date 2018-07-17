@@ -24,6 +24,6 @@ router.get('/', controller.getSettings);
 // API mettant à jour les settings
 router.put('/', controller.updateSettings);
 
-debugLog(`Admin router created`);
+debugLog(`Admin settings router created`);
 
 module.exports = router;

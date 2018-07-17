@@ -30,6 +30,6 @@ router.get('/rolemapping', controller.getTenantGroupRoleMapping);
 // API mettant à jour le mapping des roles
 router.put('/rolemapping', controller.updateTenantGroupRoleMapping);
 
-debugLog(`Admin router created`);
+debugLog(`Tenant settings router created`);
 
 module.exports = router;

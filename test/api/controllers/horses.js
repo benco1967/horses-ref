@@ -20,7 +20,7 @@ const TEST_HORSE_2_PATCH = [
 ];
 
 let authorization = null;
-describe.skip('controllers horses', () => {
+describe('controllers horses', () => {
   before(() => require('../helpers/security/generateAuthorization')().then(auth => authorization = auth));
 
   describe('GET /{tenant}/horses', () => {

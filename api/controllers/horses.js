@@ -28,7 +28,7 @@ module.exports = {
     horseModel.get(tenantId, req.params.horseId)
       .then(horse => {
         if (horse === null) {
-          throw new createError.NotFound(`Unable to get the horse: ${err.message}`);
+          throw new createError.NotFound(`Unable to get the horse`);
         }
         else {
           res.status(200).json(horse);
@@ -44,7 +44,7 @@ module.exports = {
     const url = "/horsesRef";
 
     if (horseModel.validator(req.body)) {
-      const user = getParam(req, "user");
+      const user = req.getPrm("user");
       const tenantId = req.getPrm('tenant', 'value', 'id');
       horseModel.update(null, user.userId, tenantId, req.body)
         .then(id => {
@@ -53,7 +53,7 @@ module.exports = {
             .header("link",
               new links()
                 .add({
-                  href: `${url}/${tenant.id}/horses/${id}`,
+                  href: `${url}/${tenantId}/horses/${id}`,
                   rel: "self",
                   title: "Refers to the newly created horse",
                   name: "self",
@@ -75,7 +75,7 @@ module.exports = {
     if (horseModel.validator(req.body)) {
       const horseId = req.params.horseId;
       const tenantId = req.getPrm('tenant', 'value', 'id');
-      const user = getParam(req, "user");
+      const user = req.getPrm("user");
       horseModel.update(horseId, user.userId, tenantId, req.body)
         .then(() => {
           res.status(200).end();
@@ -91,7 +91,7 @@ module.exports = {
   patchHorse: (req, res, next) => {
     const horseId = req.params.horseId;
     const tenantId = req.getPrm('tenant', 'value', 'id');
-    const user = getParam(req, "user");
+    const user = req.getPrm("user");
     horseModel.patch(horseId, user.userId, tenantId, req.body)
       .then(() => {
         res.status(200).end();

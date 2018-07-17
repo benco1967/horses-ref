@@ -29,7 +29,7 @@ router.get('/horses/:horseId', controller.getHorse);
 
 // API mettant à jour un cheval
 router.put('/horses/:horseId', controller.updateHorse);
-router.patch('/horses/:horseId', controller.updateHorse);
+router.patch('/horses/:horseId', controller.patchHorse);
 
 debugLog(`Horses router created`);
 

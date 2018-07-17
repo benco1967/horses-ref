@@ -10,7 +10,7 @@ module.exports = (shouldDisable, unauthorized) => (req, res, next) => {
   if (tenant === null) {
     // Pas de tenant on lève l'erreur
     const err = req.getPrm('tenant', 'err');
-    next(new createError[unauthorized ? 'Unauthorized' : 'NotFound'](err));
+    next(new createError[unauthorized ? 'Unauthorized' : 'NotFound'](err.message));
     return;
   }
 

@@ -279,7 +279,8 @@ describe('controllers admin tenants', () => {
           .end((err, res) => {
             should.not.exist(err);
             res.body.should.have.match({
-              message: 'No such tenant'
+              message: 'No such tenant',
+              status: 404
             });
             done();
           });
@@ -301,7 +302,8 @@ describe('controllers admin tenants', () => {
           .end((err, res) => {
             should.not.exist(err);
             res.body.should.have.match({
-              message: 'No such tenant'
+              message: 'No such tenant',
+              status: 404
             });
             done();
           });

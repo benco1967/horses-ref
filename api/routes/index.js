@@ -31,10 +31,12 @@ router.use(`/admin/settings`, require('./adminSettings'));
 router.use('/admin', require('./adminInfos'));
 
 
+// Tenant
 router.param('tenant', tenantLoader(id => tenants.get(id)));
-router.use('/:tenant', require('../middlewares/tenantDisabler')(true));
-// Setting
-router.use(`/:tenant`, require('./tenantsSettings'));
+router.use(`/:tenant`,
+  require('../middlewares/tenantDisabler')(true, true),
+  require('./tenantsSettings'),
+  require('./horses'));
 
 debugLog(`API initialized`);
 

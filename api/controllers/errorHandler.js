@@ -2,7 +2,7 @@
 
 const config = require('config');
 const statuses = require('statuses');
-const logger = require('./common/helpers/logger');
+const logger = require('../../common/helpers/logger');
 const error = logger.error(`:errorHandle`);
 
 const htmlError = (res, message, status, expose, err) => {
@@ -26,6 +26,9 @@ const htmlError = (res, message, status, expose, err) => {
 const jsonError = (res, message, status, expose, err) => {
   if (status === 401) {
     res.set("WWW-Authenticate", `Basic realm="Authentication requise", charset="UTF-8"`);
+  }
+  if (process.env.NODE_ENV === 'dev') {
+    console.log(err);
   }
   res.status(status).json({ status, message: expose ? message : statuses[status] });
 };

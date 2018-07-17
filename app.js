@@ -2,7 +2,6 @@
 
 const express = require('express');
 const config = require('config');
-const errorHandler = require('./errorHandler');
 const logger = require('./common/helpers/logger');
 const reqCustom = require('req-custom');
 const path = require('path');
@@ -62,7 +61,7 @@ const init = () => {
     throw new createError.NotFound();
   });
 
-  server.use(errorHandler);
+  server.use(require('./api/controllers/errorHandler'));
 };
 
 init(server);

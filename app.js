@@ -5,14 +5,12 @@ const config = require('config');
 const logger = require('./common/helpers/logger');
 const reqCustom = require('req-custom');
 const path = require('path');
-const favicon = require('serve-favicon');
 const routeLogger = require('morgan');
 const BodyParser = require('body-parser');
 const createError = require('http-errors');
 
 const name = config.get('name');
 const debugLog = logger.debug(`app`);
-const errorLog = logger.error(`app`);
 
 debugLog(`Service is initializing`);
 
@@ -48,11 +46,12 @@ const init = () => {
   server.set('port', normalizePort(config.get('port')));
   server.set('basePath',  path.join('/', config.get('basePath')));
 
-  server.use(routeLogger('combined'));
+  if (process.env.NODE_ENV !== 'test') server.use(routeLogger('combined'));
   server.use(reqCustom());
   server.use(BodyParser.json());
 
   server.use(express.static(path.join(__dirname, 'public')));
+  server.use('/ui/', express.static(path.join(__dirname, 'ui')));
 
   const routes = require('./api/routes');
   server.use('/', routes);

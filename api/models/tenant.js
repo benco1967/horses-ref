@@ -63,38 +63,31 @@ const tenantSchema = new mongoose.Schema({
 const TenantModel = mongoose.model('tenant', tenantSchema , 'tenants');
 
 
-const getAll = () =>
-  checkDB()
-    .then(() => TenantModel.find({}));
+const getAll = async () => {
+  await checkDB();
+  return TenantModel.find({});
+};
 
-const get = (idTenant, proj) =>
-  checkDB()
-    .then(() => {
-      let projection = undefined;
-      if(proj !== undefined) {
-        projection = {};
-        projection[proj] = 1;
-      }
-      return TenantModel.findOne({id: idTenant}, projection);
-    })
-    .then(tenant => {
-      if (tenant === null) throw new createError.NotFound("No such tenant");
+const get = async (idTenant, proj) => {
+  await checkDB();
+  let projection = undefined;
+  if (proj !== undefined) {
+    projection = {};
+    projection[proj] = 1;
+  }
+  const tenant = await TenantModel.findOne({id: idTenant}, projection);
+  if (tenant === null) throw new createError.NotFound("No such tenant");
+  return tenant;
+};
 
-      return tenant;
-    });
-
-const update = (idTenant, proj, value) =>
-  checkDB()
-    .then(() => {
-      const update = { $set: {} };
-      update.$set[proj] = value;
-      return TenantModel.findOneAndUpdate({id: idTenant}, update, { new: true });
-    })
-    .then(tenant => {
-      if (tenant === null) throw new createError.NotFound("No such tenant");
-
-      return tenant[proj];
-    });
+const update = async (idTenant, proj, value) => {
+  await checkDB();
+  const update = {$set: {}};
+  update.$set[proj] = value;
+  const tenant = await TenantModel.findOneAndUpdate({id: idTenant}, update, {new: true});
+  if (tenant === null) throw new createError.NotFound("No such tenant");
+  return tenant[proj];
+};
 
 /**
  * Create an empty tenant with the given id and description.
@@ -104,21 +97,20 @@ const update = (idTenant, proj, value) =>
  * @param contacts for the tenant, an array of strings
  * @returns {Promise} a promise resolved to the new tenant if creation succeeded
  */
-const create = (tenantId, description, contacts) =>
-  checkDB()
-    .then(() => TenantModel.findOne({id: tenantId}, {id: 1}))
-    .then(tenant => {
-      if (tenant !== null) {
-        error(`try to create the tenant "${tenantId}" that already exists`);
-        throw new createError.Conflict("Already defined");
-      }
-      if (tenantId === 'admin') {
-        error(`try to create the tenant "${tenantId}" but this id is reserved`);
-        throw new createError.Conflict("Forbidden id");
-      }
-      debug(`create the tenant "${tenantId}"`);
-      return TenantModel.create(new Tenant(tenantId, description, contacts));
-    });
+const create = async (tenantId, description, contacts) => {
+  await checkDB();
+  const tenant = await TenantModel.findOne({id: tenantId}, {id: 1});
+  if (tenant !== null) {
+    error(`try to create the tenant "${tenantId}" that already exists`);
+    throw new createError.Conflict("Already defined");
+  }
+  if (tenantId === 'admin') {
+    error(`try to create the tenant "${tenantId}" but this id is reserved`);
+    throw new createError.Conflict("Forbidden id");
+  }
+  debug(`create the tenant "${tenantId}"`);
+  return TenantModel.create(new Tenant(tenantId, description, contacts));
+};
 
 // make this available to our tenant in our Node applications
 module.exports = {

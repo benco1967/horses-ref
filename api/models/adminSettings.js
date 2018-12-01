@@ -44,38 +44,35 @@ const _newSettings = () =>
     authentication: [],
   });
 
-const _create = () =>
-  checkDB()
-    .then(() => {
-      infoLog(`created the admin settings`);
-      return adminSettingsModel.create(_newSettings());
-    });
+const _create = async () => {
+  await checkDB();
+  infoLog(`created the admin settings`);
+  return adminSettingsModel.create(_newSettings());
+};
 
 /**
  *
  * @returns {Promise}
  */
-const get = () => checkDB()
-// inutile d'avoir l'id du document car c'est le seul de la collection
-  .then(() => adminSettingsModel.findOne({}))
-  .then(settings => settings === null ? _create() : settings);
+const get = async () => {
+  await checkDB();
+  // inutile d'avoir l'id du document car c'est le seul de la collection
+  const settings = await adminSettingsModel.findOne({});
+  return settings === null ? _create() : settings;
+};
 
-
-const update = value =>
-  get()
-    // récupération de seuls champs utiles,
-    // la mise à jour de la date de mise à jour est automatique
-    .then(settings => Object.assign(settings, {
-      texts: value.texts,
-      lang: value.lang,
-      groupRoleMapping: value.groupRoleMapping,
-      authentication: value.authentication,
-    }))
-    .then(settings => settings.save())
-    .then(settings => {
-      if (settings === null) throw new createError.NotFound("Unable to update the settings");
-      return settings;
-    });
+const update = async value => {
+  let settings = await get();
+  // récupération des seuls champs utiles,
+  // la mise à jour de la date de mise à jour est automatique
+  settings.texts = value.texts;
+  settings.lang = value.lang;
+  settings.groupRoleMapping = value.groupRoleMapping;
+  settings.authentication = value.authentication;
+  settings = await settings.save();
+  if (settings === null) throw new createError.NotFound("Unable to update the settings");
+  return settings;
+};
 
 // make this available in our Node applications
 module.exports = {

@@ -1,20 +1,19 @@
 'use strict';
 const checkDB = require('../models/dbConnection').checkDB;
 
-module.exports = () => {
-  const dbStatus = {
+module.exports = async () => {
+  let status = "undefined";
+  try {
+    await checkDB();
+    status = 'ok';
+  }
+  catch {
+    status = 'error';
+  }
+  return  {
     id: 'mongodb',
     description: 'Database of the service',
-    status: "undefined",
-    details: {}
+    details: {},
+    status
   };
-  return checkDB()
-    .then(() => {
-      dbStatus.status = 'ok';
-      return dbStatus;
-    })
-    .catch(() => {
-      dbStatus.status = 'error';
-      return dbStatus;
-    });
 };

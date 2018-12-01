@@ -70,6 +70,7 @@ const update = async (horseId, userId, tenantId, newHorse) => {
   let prevHorse = await get(tenantId, horseId || newHorse.id || "");
   const defaultHorse = {};
   if (horseId === null) {
+    // Si pas d'id c'est une création
     if (prevHorse === null) {
       // ce cheval n'existe pas => on le crée
       prevHorse = {};
@@ -79,14 +80,18 @@ const update = async (horseId, userId, tenantId, newHorse) => {
       defaultHorse.tenantId = tenantId;
     }
     else {
+      // Sinon problème d'intégrité
       throw new createError.BadRequest(`Horses db integrity error can't create ${newHorse.id} that already exits`);
     }
   }
-  else if (prevHorse === null) {
-    throw new createError.NotFound(`unknow horse`);
-  }
-  else if (horseId !== newHorse.id) {
-    throw new createError.BadRequest(`Horses db integrity error ${newHorse.id} (should be ${horseId})`)
+  else {
+    // Sinon c'est une mise à jour
+    if (prevHorse === null) {
+      throw new createError.NotFound(`unknow horse`);
+    }
+    else if (horseId !== newHorse.id) {
+      throw new createError.BadRequest(`Horses db integrity error ${newHorse.id} (should be ${horseId})`)
+    }
   }
   newHorse = Object.assign(defaultHorse, newHorse, { updatedAt: new Date() });
 

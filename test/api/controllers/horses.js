@@ -41,9 +41,9 @@ describe('controllers horses', () => {
               res.body.should
                 .be.instanceof(Array)
                 .and
-                .have.length(1)
+                .matchEach(TEST_HORSE)
                 .and
-                .matchEach(TEST_HORSE);
+                .have.length(1);
               done();
             });
         });

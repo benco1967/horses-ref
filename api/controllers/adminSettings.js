@@ -1,5 +1,7 @@
 'use strict';
 const adminSettings = require('../models/adminSettings');
+const logger = require('../../common/helpers/logger');
+const errorLog = logger.error(`settings-controller`);
 
 module.exports = {
   /**

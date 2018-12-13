@@ -5,7 +5,7 @@ const Status = require('../../common/models/status');
 fonction d'ajout de l'état d'une dépendance au status courant
  */
 const _addOptionalDependencieStatus = (status, dependencie) => {
-  status._status.dependencies.push(dependencie);
+  if (typeof depedencieStatus === 'object') status._status.dependencies.push(dependencie);
   switch(dependencie.status) {
     case 'ok':
       status.status = 'ok';
@@ -16,7 +16,7 @@ const _addOptionalDependencieStatus = (status, dependencie) => {
   }
 };
 const _addMandatoryDependencieStatus = (status, dependencie) => {
-  status._status.dependencies.push(dependencie);
+  if (typeof depedencieStatus === 'object') status._status.dependencies.push(dependencie);
   switch(dependencie.status) {
     case 'ok':
       status.status = 'ok';
@@ -32,45 +32,36 @@ const _addMandatoryDependencieStatus = (status, dependencie) => {
 /*
 fonction récursive qui parcourt les dépendances et concatène les états
  */
-const _checkStatus = (i, dependenciesFn, addDependencieStatus, status) => {
-  // fonction appelée en cas d'erreur sur la dépendance
-  const failed = () => {
-    status.status = 'warning';
-    return _checkStatus(i + 1, dependenciesFn, addDependencieStatus, status);
-  };
-
-  if (i < dependenciesFn.length) {
-    // Il y a encore des dépendances à tester
-    try {
-      // appel de la dépendance
-      const result = dependenciesFn[i]();
-      if(!result) {
-        // Si aucun résultat
-        failed();
+const _checkStatus = async (dependenciesFn, addDependencieStatus, status) => {
+  if (dependenciesFn.length === 0) {
+    // cas particulier s'il n'y a aucune dépendance c'est que c'est ok
+    status.status = 'ok';
+    return;
+  }
+  const results = await Promise
+    .all(dependenciesFn.map(async fn => {
+      try {
+        return await fn();
       }
-      else {
-        return result
-          .then(dependencieStatus => {
-            // àla résolution de la promesse on ajoute l'état de la dépendance et on passe à la suivante
-            addDependencieStatus(status, dependencieStatus);
-            return _checkStatus(i + 1, dependenciesFn, addDependencieStatus, status);
-          })
-          .catch(failed); // si la promesse n'est pas résolue
+      catch (err) {
+        return false;
+      }
+    }));
+  results.forEach(dependencieStatus => {
+    try {
+      if (dependencieStatus) {
+        // Si aucun résultat
+        status.status = 'warning';
+      } else {
+        // on ajoute l'état de la dépendance
+        addDependencieStatus(status, dependencieStatus);
       }
     }
     catch (err) {
       // si une erreur est levée
-      return failed();
+      status.status = 'warning';
     }
-  }
-  else {
-    // il n'y a plus de dépendences à tester => on retourne le status
-    if (dependenciesFn.length === 0) {
-      // cas particulier s'il n'y a aucune dépendance c'est que c'est ok
-      status.status = 'ok';
-    }
-    return Promise.resolve(status._status);
-  }
+  });
 };
 
 /**
@@ -173,9 +164,10 @@ class StatusBuilder {
    }
    * </pre>
    */
-  getStatus() {
-    return _checkStatus(0, this._mandatoryDependenciesFn,_addMandatoryDependencieStatus, this)
-      .then(() => _checkStatus(0, this._optionalDependenciesFn,_addOptionalDependencieStatus, this));
+  async getStatus() {
+    await _checkStatus(this._mandatoryDependenciesFn, _addMandatoryDependencieStatus, this);
+    await _checkStatus(this._optionalDependenciesFn, _addOptionalDependencieStatus, this);
+    return this._status;
   }
 }
 
